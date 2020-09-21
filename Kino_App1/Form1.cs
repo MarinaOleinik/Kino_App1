@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Data.SqlClient;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -177,6 +178,7 @@ namespace Kino_App1
                                 arr_pilet.Add("Pilet" + (t).ToString() + "Rida" + (i + 1).ToString() + "koht" + (j + 1).ToString() + ".txt");
                                 pilet.WriteLine("Pilet" + (t).ToString() + "Rida" + (i+1).ToString() + "koht" + (j+1).ToString());
                                 pilet.Close();
+                                Insert_To_DataBase(t,i,j);
                                 
                             }
                         }
@@ -202,6 +204,31 @@ namespace Kino_App1
             }
             else { MessageBox.Show("On vaja midagi valida!"); }
         }
+
+        private void Insert_To_DataBase(int t, int i,int j)
+        {
+            string connectionString;
+            SqlConnection con;
+            connectionString = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=C:\Users\marina.oleinik\source\repos\Kino_App1\Kino_App1\AppData\Kino_Data.mdf;Integrated Security=True";
+            con = new SqlConnection(connectionString);   
+            try
+            {
+                con.Open();
+                MessageBox.Show("Andmebaas on avatud");
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show("Andmebaasi avamiseks tekkis viga"+e.Message);
+            }
+            SqlCommand command;
+            string sql = "INSERT INTO Ostetud_Piletid(Id,Rida,Koht) VALUES("+(t)+","+(i+1)+","+(j+1)+")";
+            command = new SqlCommand(sql, con);
+            command.ExecuteNonQuery();
+            command.Dispose();
+            con.Close();
+            
+        }
+
         private void Osta_Click(object sender, EventArgs e)
         {
             Osta_Click_Func();
